@@ -2,17 +2,49 @@ import './styles.css';
 import templateCountry from './templates/templateCountry.hbs';
 import debounce from '../node_modules/lodash.debounce';
 import axios from '../node_modules/axios';
+import manyContries from './templates/manyContries.hbs'
 
-console.log(axios);
+const carditem = document.querySelector('.carditem');
+const input = document.querySelector('.input');
 
-// fetch('https://restcountries.eu/rest/v2/all?fields=name;capital;currencies'
-// ).then(responce => responce.json()).then(console.log(responce))
+input.addEventListener('input', () => {
+    let searhContry = input.value;
+    GetCountry(searhContry);
 
-// Вопрос по запросу API  с сайта погоды. Залогинилась, получила ключ, который необходим для получения json, но файл так и не пришел http://joxi.ru/Dr8qyMBFJkDowm  Обьясните еще раз крос домен запросы, у вас на видео все получилось,а у меня нет? проверила в заголовке ответа Accept: */*   http://joxi.ru/eAOwYd9T64G8zA . 	"const YOUR_ACCESS_KEY = '1878e589c5a39020a48cb1b2ff19559d';
-axios.get(
-    `https://restcountries.eu/rest/v2/all?fields=name;capital;currencies`,
-)
-    .then(function (response) {
-        return console.log(response.data);
-    })
-    // .then(console.log);
+});
+
+function GetCountry(CountryName) {
+    return axios.get(
+        `https://restcountries.eu/rest/v2/name/${ CountryName }
+
+`,
+    )
+        .then(function (response) {
+
+            // const arr = response.data[0];
+            // console.log(arr);
+            // const renderPage1 = manyContries(arr);
+            // carditem.innerHTML = renderPage1;
+
+            if (response.data.length > 2)
+            {
+                const renderPage1 = manyContries(response.data[0]);
+                carditem.innerHTML = renderPage1;
+
+                // console.log(response.data);
+            } else
+            {
+                // console.log(response.data.length);
+                return response.data[0];
+            }
+
+        }).then(function (objCountry) {
+
+            console.log(objCountry);
+
+            const renderPage = manyContries(objCountry);
+            carditem.innerHTML = renderPage;
+
+        })
+
+}
